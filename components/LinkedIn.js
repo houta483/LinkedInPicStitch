@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Text, View, TouchableOpacity, Image, StyleSheet } from 'react-native'
 import LinkedInComp from './LinkedInComp'
 import OtherPage from './OtherPage'
@@ -6,15 +6,17 @@ import OtherPage from './OtherPage'
 class LinkedIn extends React.Component {
   constructor(props) {
     super(props)
-
+    
+    
     this.state = {
       accessToken: null,
       getContactsPage: false,
     }
-
+    
     this.onPress = this.onPress.bind(this);
     this.togglePage = this.togglePage.bind(this);
   }
+
 
   onPress = () => {
     console.log(this.state.accessToken)
@@ -24,9 +26,11 @@ class LinkedIn extends React.Component {
     this.setState((state) => ({getContactsPage: !state.getContactsPage}))
   }
 
+  
+
   render() {
 
-    if (this.state.getContactsPage === false) {
+    if (false) {
       return(
         <View>
           <LinkedInComp
@@ -41,7 +45,7 @@ class LinkedIn extends React.Component {
       )
     }
     
-    else if (this.state.getContactsPage === true) {
+    else if (true) {
       return(
         <View>
           <OtherPage 

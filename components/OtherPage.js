@@ -1,8 +1,38 @@
-import React from 'react'
-import { View, Text, Image, StyleSheet } from 'react-native'
+import React, { useEffect } from 'react'
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
 import CustomButton from './Button'
+import * as Contacts from 'expo-contacts';
 
 function OtherPage ({buttonFunction, buttonText}) {
+  const state = {
+    contacts: null,
+    fullName: []
+  }
+  
+  useEffect(() => {
+    (async () => {
+      const { status } = await Contacts.requestPermissionsAsync();
+      if (status === 'granted') {
+        const { data } = await Contacts.getContactsAsync({
+          fields: [Contacts.Fields.Emails],
+        });
+
+        if (data.length > 0) {
+          const contact = data;
+          console.log(contact);
+        }
+
+        state.contacts = data
+      }
+    })();
+  }, []);
+
+  const loadContactsToState = () => {
+    for (let i = 0; i < state.contacts.length; i++) {
+      state.fullName.push([state.contacts[i].name, i])
+    }
+  }
+
   return(
     <View>
       <View style={styles.image}>
@@ -13,15 +43,25 @@ function OtherPage ({buttonFunction, buttonText}) {
       
       <View style={styles.body}>
         <Text> 
-          Hello There 
+           
         </Text>
+
+        <TouchableOpacity 
+          onPress={loadContactsToState}
+        >
+          <Text>Check State</Text>
+        </TouchableOpacity>
 
         <CustomButton
           clickButton={buttonFunction}
           text={buttonText}
-        >
+        />
 
-        </CustomButton>
+        <CustomButton
+          clickButton={() => console.log(state.contacts)}
+          text={buttonText}
+        />
+
       </View>
     </View>
   )
