@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
 import CustomButton from './Button'
 import * as Contacts from 'expo-contacts';
+import * as SecureStore from 'expo-secure-store';
 
-function OtherPage ({buttonFunction, buttonText}) {
+function OtherPage ({ buttonFunction, buttonText }) {
   const state = {
-    contacts: null,
-    fullName: []
+    contacts: [],
   }
   
   useEffect(() => {
@@ -18,47 +18,38 @@ function OtherPage ({buttonFunction, buttonText}) {
         });
 
         if (data.length > 0) {
-          const contact = data;
-          console.log(contact);
+          // console.log(data[0].name) // "Kate Bell"
+          state.contacts = data
         }
-
-        state.contacts = data
+        // console.log('contacts ' + state.contacts[0].name)
+        for (let i = 0; i < state.contacts.length; i++) {
+          SecureStore.setItemAsync(`keyNumber${i}`, state.contacts[i].name)
+        }
       }
     })();
   }, []);
 
-  const loadContactsToState = () => {
-    for (let i = 0; i < state.contacts.length; i++) {
-      state.fullName.push([state.contacts[i].name, i])
+    const checkForNameByIndex = (index) => {
+      SecureStore.getItemAsync(`keyNumber${index}`).then(data => console.log(data))
     }
-  }
 
   return(
-    <View>
-      <View style={styles.image}>
+    <View> 
+      <View >
         <Image
           source={require('../images/LinkedIn.png')}
         />
       </View>
       
       <View style={styles.body}>
-        <Text> 
-           
-        </Text>
-
-        <TouchableOpacity 
-          onPress={loadContactsToState}
-        >
-          <Text>Check State</Text>
-        </TouchableOpacity>
 
         <CustomButton
-          clickButton={buttonFunction}
-          text={buttonText}
+          clickButton={() => checkForNameByIndex(2)}
+          text={'Check for name at Index of 2'}
         />
 
         <CustomButton
-          clickButton={() => console.log(state.contacts)}
+          clickButton={buttonFunction}
           text={buttonText}
         />
 

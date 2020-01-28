@@ -15,6 +15,7 @@ class LinkedIn extends React.Component {
     
     this.onPress = this.onPress.bind(this);
     this.togglePage = this.togglePage.bind(this);
+    this.fetchTest = this.fetchTest.bind(this);
   }
 
 
@@ -26,11 +27,20 @@ class LinkedIn extends React.Component {
     this.setState((state) => ({getContactsPage: !state.getContactsPage}))
   }
 
-  
+  fetchTest = () => {
+    fetch(`https://api.linkedin.com/v2/me`, {
+      credentials: 'include',
+      headers: {
+        'Authorization': `Bearer ${this.state.accessToken}`
+      }
+    })
+      .then(resp => resp.json())
+      .then(data => console.log(data))
+  }
 
   render() {
 
-    if (false) {
+    if (this.state.getContactsPage === false) {
       return(
         <View>
           <LinkedInComp
@@ -41,11 +51,18 @@ class LinkedIn extends React.Component {
                 ? this.setState({accessToken: token.access_token})
                 : console.log(this.state.accessToken)}
           />
+          <View>
+            <TouchableOpacity
+              onPress={this.fetchTest}
+            >
+              <Text> Fetch </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )
     }
     
-    else if (true) {
+    else if (this.state.getContactsPage === true) {
       return(
         <View>
           <OtherPage 
@@ -57,6 +74,23 @@ class LinkedIn extends React.Component {
     }
   }
 }
+
+// const styles = StyleSheet.create({
+//   image: {
+//     flex: .2,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     // borderColor: 'red',
+//     // borderWidth: 1,
+//   },
+//   body: {
+//     flex: .5,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     // borderColor: 'red',
+//     // borderWidth: 1,
+//   }
+// })
 
 export default LinkedIn
 

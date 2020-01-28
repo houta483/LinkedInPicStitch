@@ -3,6 +3,8 @@ import { View, Image } from 'react-native';
 import LinkedInModal from 'react-native-linkedin';
 import CustomButton from './Button';
 import config from '../config';
+import * as SecureStore from 'expo-secure-store';
+
 
 function LinkedInComp ({ onPress, goToContactsPage, customSuccess }) {
   
@@ -19,11 +21,12 @@ function LinkedInComp ({ onPress, goToContactsPage, customSuccess }) {
         clientSecret={clientSecret}
         redirectUri="https://www.google.co.in/"
         onSuccess={token => customSuccess(token)}
+        
       />
 
       <CustomButton 
         clickButton={onPress}
-        text={"Check State"}
+        text={"Check State.AccessToken"}
       />
 
       <CustomButton 

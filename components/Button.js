@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 
 function CustomButton ({ clickButton, text }) {
   return(
-    <View styles={styles.button}>
+    <View>
       <TouchableOpacity
         onPress={clickButton}
         style={styles.button}
