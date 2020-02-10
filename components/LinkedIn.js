@@ -11,11 +11,13 @@ class LinkedIn extends React.Component {
     this.state = {
       accessToken: null,
       getContactsPage: false,
+      linkedInId: '',
     }
     
     this.onPress = this.onPress.bind(this);
     this.togglePage = this.togglePage.bind(this);
-    this.fetchTest = this.fetchTest.bind(this);
+    this.fetchID = this.fetchID.bind(this);
+    this.fetchConnections = this.fetchConnections.bind(this);
   }
 
 
@@ -27,18 +29,37 @@ class LinkedIn extends React.Component {
     this.setState((state) => ({getContactsPage: !state.getContactsPage}))
   }
 
-  fetchTest = () => {
+  fetchID = () => {
     fetch(`https://api.linkedin.com/v2/me`, {
       credentials: 'include',
       headers: {
         'Authorization': `Bearer ${this.state.accessToken}`
-      }
+      },
     })
-      .then(resp => resp.json())
-      .then(data => console.log(data))
-  }
+      .then(response => response.json())
+      .then(data => this.setState((state) => ({
+        access_token: state.accessToken,
+        getContactsPage: state.getContactsPage,
+        linkedInId: data.id
+      })))
+    }
 
-  render() {
+
+
+    fetchConnections = () => {
+      // need to get permission from the linkedin API. I submitted request and am just waiting to hear back
+      fetch(`https://api.linkedin.com/v2/connections?q=viewer&start=0&count=50`, {
+      credentials: 'include',
+      headers: {
+        'Authorization': `Bearer ${this.state.accessToken}`,
+      },
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+    }
+    
+    render() {
+      console.log('this.state.linkedInId: ' + this.state.linkedInId)
 
     if (this.state.getContactsPage === false) {
       return(
@@ -53,11 +74,20 @@ class LinkedIn extends React.Component {
           />
           <View>
             <TouchableOpacity
-              onPress={this.fetchTest}
+              onPress={this.fetchID}
             >
               <Text> Fetch </Text>
             </TouchableOpacity>
           </View>
+
+          <View>
+            <TouchableOpacity
+              onPress={this.fetchConnections}
+            >
+              <Text> Test API Calls </Text>
+            </TouchableOpacity>
+          </View>
+
         </View>
       )
     }

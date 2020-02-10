@@ -21,7 +21,7 @@ function LinkedInComp ({ onPress, goToContactsPage, customSuccess }) {
         clientSecret={clientSecret}
         redirectUri="https://www.google.co.in/"
         onSuccess={token => customSuccess(token)}
-        
+        permissions={['r_liteprofile']}
       />
 
       <CustomButton 
