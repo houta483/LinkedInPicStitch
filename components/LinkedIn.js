@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Text, View, TouchableOpacity, Image, StyleSheet } from 'react-native'
 import LinkedInComp from './LinkedInComp'
 import OtherPage from './OtherPage'
@@ -6,15 +6,20 @@ import OtherPage from './OtherPage'
 class LinkedIn extends React.Component {
   constructor(props) {
     super(props)
-
+    
+    
     this.state = {
       accessToken: null,
       getContactsPage: false,
+      linkedInId: '',
     }
-
+    
     this.onPress = this.onPress.bind(this);
     this.togglePage = this.togglePage.bind(this);
+    this.fetchID = this.fetchID.bind(this);
+    this.fetchConnections = this.fetchConnections.bind(this);
   }
+
 
   onPress = () => {
     console.log(this.state.accessToken)
@@ -24,7 +29,37 @@ class LinkedIn extends React.Component {
     this.setState((state) => ({getContactsPage: !state.getContactsPage}))
   }
 
-  render() {
+  fetchID = () => {
+    fetch(`https://api.linkedin.com/v2/me`, {
+      credentials: 'include',
+      headers: {
+        'Authorization': `Bearer ${this.state.accessToken}`
+      },
+    })
+      .then(response => response.json())
+      .then(data => this.setState((state) => ({
+        access_token: state.accessToken,
+        getContactsPage: state.getContactsPage,
+        linkedInId: data.id
+      })))
+    }
+
+
+
+    fetchConnections = () => {
+      // need to get permission from the linkedin API. I submitted request and am just waiting to hear back
+      fetch(`https://api.linkedin.com/v2/connections?q=viewer&start=0&count=50`, {
+      credentials: 'include',
+      headers: {
+        'Authorization': `Bearer ${this.state.accessToken}`,
+      },
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+    }
+    
+    render() {
+      console.log('this.state.linkedInId: ' + this.state.linkedInId)
 
     if (this.state.getContactsPage === false) {
       return(
@@ -37,6 +72,22 @@ class LinkedIn extends React.Component {
                 ? this.setState({accessToken: token.access_token})
                 : console.log(this.state.accessToken)}
           />
+          <View>
+            <TouchableOpacity
+              onPress={this.fetchID}
+            >
+              <Text> Fetch </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View>
+            <TouchableOpacity
+              onPress={this.fetchConnections}
+            >
+              <Text> Test API Calls </Text>
+            </TouchableOpacity>
+          </View>
+
         </View>
       )
     }
@@ -53,6 +104,23 @@ class LinkedIn extends React.Component {
     }
   }
 }
+
+// const styles = StyleSheet.create({
+//   image: {
+//     flex: .2,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     // borderColor: 'red',
+//     // borderWidth: 1,
+//   },
+//   body: {
+//     flex: .5,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     // borderColor: 'red',
+//     // borderWidth: 1,
+//   }
+// })
 
 export default LinkedIn
 
